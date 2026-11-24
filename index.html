@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#f5f3ee" />
+    <meta
+      name="description"
+      content="Try and copy six interactive SaaS interface patterns. Each example includes accessible HTML, scoped CSS and plain JavaScript."
+    />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <title>Front/SaaS — Pattern library</title>
+  </head>
+  <body>
+    <a href="#pattern-title" class="skip">Skip to component</a>
+    <nav class="top" aria-label="Site navigation">
+      <div class="top-inner">
+        <a class="brand" href="./" aria-label="Front/SaaS home"
+          ><span class="brand-mark" aria-hidden="true">F<span>/</span></span
+          ><strong>Front<span>/</span>SaaS</strong></a
+        >
+        <a
+          class="repo"
+          href="https://github.com/Adnanne-Bourhayal/front-saas-library"
+          >GitHub <span aria-hidden="true">↗</span></a
+        >
+      </div>
+    </nav>
+    <div class="wrap">
+      <aside aria-label="Browse patterns">
+        <button
+          class="mobile-switch"
+          type="button"
+          aria-controls="browse"
+          aria-expanded="false"
+        >
+          Browse patterns <span aria-hidden="true">⌄</span>
+        </button>
+        <div id="browse">
+          <h2>Pattern library</h2>
+          <label class="search"
+            ><span aria-hidden="true">⌕</span
+            ><input
+              id="search"
+              type="search"
+              aria-label="Find a pattern"
+              placeholder="Find a pattern"
+          /></label>
+          <div id="list"></div>
+          <p id="no-results" hidden>
+            No matching patterns.
+            <button id="clear-search">Clear search</button>
+          </p>
+        </div>
+      </aside>
+      <main id="main">
+        <div class="crumb">
+          <span>Library</span><span aria-hidden="true">/</span
+          ><span id="category"></span>
+        </div>
+        <h1 id="pattern-title" tabindex="-1"></h1>
+        <p class="description" id="description"></p>
+        <section class="workbench" aria-label="Component workbench">
+          <div class="tools">
+            <div class="switch" role="group" aria-label="View mode">
+              <button type="button" id="preview-button" aria-pressed="true">
+                Preview</button
+              ><button type="button" id="code-button" aria-pressed="false">
+                Code
+              </button>
+            </div>
+            <button type="button" id="copy">
+              <span aria-hidden="true">⧉</span> Copy HTML
+            </button>
+          </div>
+          <div id="stage">
+            <div class="frame-wrap">
+              <iframe
+                id="preview"
+                title="Interactive pattern preview"
+                sandbox="allow-scripts allow-forms"
+              ></iframe>
+            </div>
+          </div>
+          <div id="editor" hidden>
+            <pre
+              tabindex="0"
+              aria-label="Component source code"
+            ><code id="source"></code></pre>
+          </div>
+          <div class="foot" id="preview-foot">
+            <span><i></i> Live preview</span>
+            <div role="group" aria-label="Preview width">
+              <button id="desktop" aria-pressed="true">Full width</button
+              ><button id="mobile" aria-pressed="false">Mobile</button
+              ><button id="reset" type="button">Reset</button>
+            </div>
+          </div>
+          <p id="notice" role="status" aria-live="polite"></p>
+        </section>
+        <section class="use">
+          <h2>Use this pattern</h2>
+          <p id="instructions"></p>
+          <p id="integration"></p>
+          <p>
+            Paste the copied HTML into an HTML page. Styles and interaction are
+            included.
+          </p>
+        </section>
+      </main>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

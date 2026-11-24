@@ -1,0 +1,38 @@
+<section data-fsl="usage-meter" aria-label="Storage allowance">
+  <div class="fs-head">
+    <h2>Storage allowance</h2>
+    <span class="fs-pill" data-status></span>
+  </div>
+  <p class="fs-figure" aria-live="polite" data-amount></p>
+  <progress aria-label="Storage used" value="6" max="10"></progress>
+  <div class="fs-fields">
+    <label class="fs-field"
+      >Usage in GB<input type="range" min="0" max="10" value="6" step="1"
+    /></label>
+  </div>
+  <p class="fs-note" data-remaining></p>
+</section>
+<script>
+  ;(() => {
+    const root = document.currentScript.previousElementSibling
+    const range = root.querySelector('input'),
+      meter = root.querySelector('progress')
+    function update() {
+      const used = range.valueAsNumber,
+        limit = Number(range.max)
+      meter.value = used
+      root.querySelector('[data-amount]').textContent =
+        used + ' / ' + limit + ' GB'
+      root.querySelector('[data-status]').textContent =
+        used === limit
+          ? 'Limit reached'
+          : used >= limit * 0.8
+            ? 'Near limit'
+            : 'Within allowance'
+      root.querySelector('[data-remaining]').textContent =
+        limit - used + ' GB available.'
+    }
+    range.addEventListener('input', update)
+    update()
+  })()
+</script>

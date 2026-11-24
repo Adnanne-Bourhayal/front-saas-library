@@ -1,0 +1,66 @@
+<section
+  data-fsl="notification-preferences"
+  aria-label="Notification preferences"
+>
+  <div class="fs-head">
+    <h2>Notifications</h2>
+    <span class="fs-pill" data-state>Saved</span>
+  </div>
+  <form>
+    <ul class="fs-rows">
+      <li>
+        <label
+          ><input type="checkbox" name="weekly" checked /> Weekly digest</label
+        >
+      </li>
+      <li>
+        <label
+          ><input type="checkbox" name="mentions" checked /> Mentions and
+          replies</label
+        >
+      </li>
+      <li>
+        <label><input type="checkbox" name="product" /> Product updates</label>
+      </li>
+    </ul>
+    <div class="fs-actions">
+      <button class="fs-primary" disabled>Save preferences</button
+      ><button type="button" data-cancel disabled>Discard changes</button>
+    </div>
+  </form>
+  <p class="fs-note" role="status"></p>
+</section>
+<script>
+  ;(() => {
+    const root = document.currentScript.previousElementSibling
+    const form = root.querySelector('form'),
+      fields = [...form.querySelectorAll('input')]
+    const status = root.querySelector('[role=status]')
+    let saved = fields.map((field) => field.checked)
+    function update() {
+      const dirty = fields.some((field, i) => field.checked !== saved[i])
+      root.querySelector('[data-state]').textContent = dirty
+        ? 'Unsaved changes'
+        : 'Saved'
+      for (const button of form.querySelectorAll('button'))
+        button.disabled = !dirty
+    }
+    form.addEventListener('change', () => {
+      status.textContent = ''
+      update()
+    })
+    form.addEventListener('submit', (event) => {
+      event.preventDefault()
+      saved = fields.map((field) => field.checked)
+      update()
+      status.textContent = 'Preferences saved for this preview.'
+    })
+    form.querySelector('[data-cancel]').addEventListener('click', () => {
+      fields.forEach((field, i) => {
+        field.checked = saved[i]
+      })
+      update()
+      status.textContent = 'Previous preferences restored.'
+    })
+  })()
+</script>

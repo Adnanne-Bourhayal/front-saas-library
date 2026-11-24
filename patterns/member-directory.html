@@ -1,0 +1,65 @@
+<section data-fsl="member-directory" aria-label="Member directory">
+  <div class="fs-head">
+    <h2>Team members</h2>
+    <span class="fs-note" role="status"></span>
+  </div>
+  <div class="fs-fields">
+    <label class="fs-field"
+      >Find a member<input type="search" placeholder="Search by name or role"
+    /></label>
+    <label class="fs-field"
+      >Status<select>
+        <option>All statuses</option>
+        <option>Active</option>
+        <option>Invited</option>
+      </select></label
+    >
+  </div>
+  <ul class="fs-rows">
+    <li>
+      <div><strong>Ada Ellis</strong><small>Designer</small></div>
+      <span class="fs-pill">Active</span>
+    </li>
+    <li>
+      <div><strong>Leo Kim</strong><small>Developer</small></div>
+      <span class="fs-pill fs-muted-pill">Invited</span>
+    </li>
+    <li>
+      <div><strong>Sam Rivera</strong><small>Product manager</small></div>
+      <span class="fs-pill">Active</span>
+    </li>
+  </ul>
+  <p class="fs-note" data-empty hidden>No members match these filters.</p>
+</section>
+<script>
+  ;(() => {
+    const root = document.currentScript.previousElementSibling
+    const search = root.querySelector('input')
+    const status = root.querySelector('select')
+    function filter() {
+      let count = 0
+      const rows = root.querySelectorAll('li')
+      for (const row of rows) {
+        const matchesText = [...row.querySelector('div').children]
+          .map((cell) => cell.textContent)
+          .join(' ')
+          .toLowerCase()
+          .includes(search.value.trim().toLowerCase())
+        const matchesStatus =
+          status.value === 'All statuses' ||
+          status.value === row.querySelector('.fs-pill').textContent
+        row.hidden = !(matchesText && matchesStatus)
+        if (!row.hidden) count++
+      }
+      root.querySelector('[role=status]').textContent =
+        count +
+        ' of ' +
+        rows.length +
+        (rows.length === 1 ? ' member' : ' members')
+      root.querySelector('[data-empty]').hidden = count !== 0
+    }
+    search.addEventListener('input', filter)
+    status.addEventListener('change', filter)
+    filter()
+  })()
+</script>

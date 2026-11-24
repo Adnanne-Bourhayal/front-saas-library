@@ -1,0 +1,49 @@
+<section data-fsl="first-project" aria-label="Project list">
+  <div class="fs-head">
+    <h2>Projects</h2>
+    <span class="fs-pill" data-count>0 projects</span>
+  </div>
+  <p class="fs-note" data-empty>
+    Your workspace is empty. Give your first project a name to get started.
+  </p>
+  <ul class="fs-rows"></ul>
+  <form class="fs-fields">
+    <label class="fs-field"
+      >Project name<input
+        required
+        maxlength="55"
+        placeholder="e.g. Customer portal" /></label
+    ><button class="fs-primary">Add project</button>
+  </form>
+  <p class="fs-note" role="status"></p>
+</section>
+<script>
+  ;(() => {
+    const root = document.currentScript.previousElementSibling
+    const form = root.querySelector('form'),
+      field = root.querySelector('input'),
+      list = root.querySelector('ul')
+    form.addEventListener('submit', (event) => {
+      event.preventDefault()
+      const name = field.value.trim()
+      if (!name) {
+        root.querySelector('[role=status]').textContent =
+          'Enter a project name.'
+        field.focus()
+        return
+      }
+      const row = document.createElement('li'),
+        title = document.createElement('strong')
+      title.textContent = name
+      row.append(title)
+      list.append(row)
+      root.querySelector('[data-empty]').hidden = true
+      const n = list.children.length
+      root.querySelector('[data-count]').textContent =
+        n + (n === 1 ? ' project' : ' projects')
+      root.querySelector('[role=status]').textContent = 'Added ' + name + '.'
+      form.reset()
+      field.focus()
+    })
+  })()
+</script>

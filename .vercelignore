@@ -1,0 +1,6 @@
+.git
+._*
+**/._*
+.env*
+node_modules
+dist

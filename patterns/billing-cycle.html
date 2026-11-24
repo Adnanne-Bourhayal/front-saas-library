@@ -1,0 +1,59 @@
+<section data-fsl="billing-cycle" aria-label="Price calculator">
+  <div class="fs-head">
+    <h2>Team plan</h2>
+    <span class="fs-pill">Per seat</span>
+  </div>
+  <div role="group" aria-label="Billing period" class="fs-actions">
+    <button type="button" aria-pressed="true" data-cycle="monthly">
+      Monthly</button
+    ><button type="button" aria-pressed="false" data-cycle="annual">
+      Annual
+    </button>
+  </div>
+  <div class="fs-fields">
+    <label class="fs-field"
+      >Seats<input type="number" min="1" max="250" value="5" step="1"
+    /></label>
+  </div>
+  <div aria-live="polite">
+    <p class="fs-figure" data-price></p>
+    <p class="fs-note" data-total></p>
+  </div>
+</section>
+<script>
+  ;(() => {
+    const root = document.currentScript.previousElementSibling
+    const seats = root.querySelector('input')
+    const buttons = root.querySelectorAll('[data-cycle]')
+    let annual = false
+    const currency = new Intl.NumberFormat('en-IE', {
+      style: 'currency',
+      currency: 'EUR',
+      maximumFractionDigits: 0,
+    })
+    function calculate() {
+      const number = seats.valueAsNumber
+      if (!seats.validity.valid || !Number.isInteger(number)) {
+        root.querySelector('[data-price]').textContent = '—'
+        root.querySelector('[data-total]').textContent =
+          'Choose between 1 and 250 seats.'
+        return
+      }
+      const monthly = number * (annual ? 16 : 20)
+      root.querySelector('[data-price]').textContent =
+        currency.format(monthly) + ' / month'
+      root.querySelector('[data-total]').textContent = annual
+        ? currency.format(monthly * 12) + ' billed annually.'
+        : currency.format(monthly) + ' billed monthly.'
+    }
+    for (const button of buttons)
+      button.addEventListener('click', () => {
+        annual = button.dataset.cycle === 'annual'
+        for (const other of buttons)
+          other.setAttribute('aria-pressed', String(other === button))
+        calculate()
+      })
+    seats.addEventListener('input', calculate)
+    calculate()
+  })()
+</script>
