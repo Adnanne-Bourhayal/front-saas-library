@@ -1,5 +1,7 @@
 # Front/SaaS
 
+[Open the pattern library](https://front-saas-library.vercel.app).
+
 A small library of interactive patterns for SaaS product teams. Try each component with a keyboard, switch between desktop and mobile widths, and copy a complete working example into your project.
 
 | Pattern | What you can try |
