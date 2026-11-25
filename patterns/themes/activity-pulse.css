@@ -1,0 +1,65 @@
+[data-fsl='activity-pulse'] {
+  --fs-ink: #f9f5ff;
+  --fs-muted: #c4b6d0;
+  --fs-line: #514359;
+  --fs-accent: #bca3dd;
+  background: #2d2438;
+  border: 0;
+  border-radius: 8px;
+}
+[data-fsl='activity-pulse'] h2 {
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+}
+[data-fsl='activity-pulse'] .fs-head {
+  margin-bottom: 2px;
+}
+[data-fsl='activity-pulse'] .fs-period {
+  display: flex;
+  border: 1px solid var(--fs-line);
+  padding: 2px;
+  border-radius: 5px;
+}
+[data-fsl='activity-pulse'] button {
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
+  color: var(--fs-muted);
+  font-size: 12px;
+  padding: 4px 9px;
+}
+[data-fsl='activity-pulse'] button[aria-pressed='true'] {
+  color: #261e2e;
+  background: #e4d4f7;
+}
+[data-fsl='activity-pulse'] .fs-figure {
+  font-family: Georgia, serif;
+  font-weight: 400;
+  font-size: 54px;
+}
+[data-fsl='activity-pulse'] .fs-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 9px;
+  list-style: none;
+  padding: 0;
+  margin: 16px 0 0;
+}
+[data-fsl='activity-pulse'] .fs-bars li {
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+}
+[data-fsl='activity-pulse'] .fs-bars span {
+  display: block;
+  background: #b9a1d4;
+  border-radius: 2px 2px 0 0;
+}
+[data-fsl='activity-pulse'] .fs-bars li:last-child span {
+  background: #f3dd99;
+}
+[data-fsl='activity-pulse'] .fs-bars small {
+  font-size: 10px;
+  margin-top: 4px;
+}

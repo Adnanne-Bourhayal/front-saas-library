@@ -1,113 +1,163 @@
 import './style.css'
-import { patterns, sourceFor, type Pattern } from './catalog'
+import { categories, patterns, sourceFor, type Pattern } from './catalog'
 
 function el<T extends HTMLElement>(id: string): T {
   return document.getElementById(id) as T
 }
 
-const frame = el<HTMLIFrameElement>('preview')
-const list = el('list')
+const dialog = el<HTMLDialogElement>('viewer')
 const search = el<HTMLInputElement>('search')
-const mobileMenu = document.querySelector<HTMLButtonElement>('.mobile-switch')!
-let selected =
-  patterns.find((p) => p.id === location.hash.slice(1)) || patterns[0]
-let activeView: 'preview' | 'code' = 'preview'
-let renderId = 0
-let source = ''
-let compact = false
-
-const lines: Record<string, string> = {
-  members:
-    '<circle cx="8" cy="8" r="2.5"/><path d="M3 18v-1a5 5 0 0 1 10 0v1m0-12a3 3 0 0 1 0 6m3 1a4 4 0 0 1 3 4v1"/>',
-  billing:
-    '<rect x="2" y="5" width="17" height="12" rx="2"/><path d="M2 9h17m-13 5h4"/>',
-  project:
-    '<path d="M2 7V5a1 1 0 0 1 1-1h5l2 2h8a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1z"/>',
-  check:
-    '<rect x="3" y="3" width="15" height="15" rx="2"/><path d="m6 10 3 3 6-6"/>',
-  meter:
-    '<path d="M3 16a8 8 0 1 1 15 0M10.5 12.5l4-5"/><circle cx="10.5" cy="12.5" r="1"/>',
-  settings:
-    '<path d="M3 6h8m4 0h4M3 14h3m4 0h9"/><circle cx="13" cy="6" r="2"/><circle cx="8" cy="14" r="2"/>',
-}
-
-function buildList() {
-  list.replaceChildren()
-  const term = search.value.trim().toLowerCase()
-  const results = patterns.filter((p) =>
-    (p.name + ' ' + p.category + ' ' + p.description)
-      .toLowerCase()
-      .includes(term),
-  )
-  for (const category of new Set(results.map((p) => p.category))) {
-    const group = document.createElement('section')
-    const title = document.createElement('h3')
-    title.textContent = category
-    group.append(title)
-    for (const p of results.filter((item) => item.category === category)) {
-      const link = document.createElement('a')
-      link.href = '#' + p.id
-      link.className = 'item'
-      if (p.id === selected.id) link.setAttribute('aria-current', 'page')
-      const icon = document.createElement('span')
-      icon.setAttribute('aria-hidden', 'true')
-      icon.innerHTML =
-        '<svg viewBox="0 0 21 21" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">' +
-        lines[p.icon] +
-        '</svg>'
-      link.append(icon, document.createTextNode(p.name))
-      link.onclick = () => {
-        setMenu(false)
-        if (location.hash === '#' + p.id) el('pattern-title').focus()
-      }
-      group.append(link)
-    }
-    list.append(group)
+const results = el('results')
+let frame = el<HTMLIFrameElement>('preview')
+const thumbnails = new ResizeObserver((entries) => {
+  for (const entry of entries) {
+    const scale = Math.min(
+      entry.contentRect.width / 530,
+      entry.contentRect.height / 370,
+    )
+    ;(entry.target as HTMLElement).style.setProperty(
+      '--thumb-scale',
+      String(scale),
+    )
   }
-  el('no-results').hidden = results.length !== 0
+})
+
+const policy =
+  "default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; form-action 'none'; base-uri 'none'"
+function documentFor(source: string, thumbnail: boolean, version = 0) {
+  const thumbnailStyles =
+    'body{height:370px;padding:14px;display:grid;align-items:center;}'
+  const resize =
+    '<script>new ResizeObserver(()=>parent.postMessage({render:' +
+    version +
+    ',height:document.body.offsetHeight},"*")).observe(document.body);document.addEventListener("keydown",e=>{if(e.key==="Escape")parent.postMessage({render:' +
+    version +
+    ',close:true},"*")})</script>'
+  return (
+    '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta http-equiv="Content-Security-Policy" content="' +
+    policy +
+    '"><style>html,body{margin:0}body{box-sizing:border-box;background:transparent;}' +
+    (thumbnail ? thumbnailStyles : '') +
+    '</style></head><body>' +
+    source +
+    (thumbnail ? '' : resize) +
+    '</body></html>'
+  )
 }
-function setMenu(open: boolean) {
-  mobileMenu.setAttribute('aria-expanded', String(open))
-  el('browse').classList.toggle('opened', open)
+
+const slug = (category: string) =>
+  'collection-' + category.toLowerCase().replaceAll(' ', '-')
+const categoryNav = document.querySelector<HTMLElement>('.categories')!
+for (const category of categories) {
+  const link = document.createElement('a')
+  link.href = '#' + slug(category)
+  link.textContent = category
+  link.addEventListener('click', () => {
+    if (search.value) {
+      search.value = ''
+      renderGallery()
+    }
+  })
+  categoryNav.append(link)
 }
-mobileMenu.onclick = () =>
-  setMenu(mobileMenu.getAttribute('aria-expanded') !== 'true')
-search.oninput = buildList
+
+function makeCard(pattern: Pattern) {
+  const card = document.createElement('article')
+  card.className = 'card'
+  const art = document.createElement('div')
+  art.className = 'art mat-' + pattern.mat
+  art.inert = true
+  art.setAttribute('aria-hidden', 'true')
+  const thumbnail = document.createElement('iframe')
+  thumbnail.className = 'thumb'
+  thumbnail.title = pattern.name + ' thumbnail'
+  thumbnail.tabIndex = -1
+  thumbnail.setAttribute('sandbox', 'allow-scripts')
+  thumbnail.loading = 'lazy'
+  thumbnail.srcdoc = documentFor(sourceFor(pattern.id), true)
+  art.append(thumbnail)
+  thumbnails.observe(art)
+  const link = document.createElement('a')
+  link.className = 'card-link'
+  link.href = '#' + pattern.id
+  link.setAttribute('aria-haspopup', 'dialog')
+  const title = document.createElement('h3')
+  title.textContent = pattern.name
+  const arrow = document.createElement('span')
+  arrow.className = 'arrow'
+  arrow.textContent = '↗'
+  arrow.setAttribute('aria-hidden', 'true')
+  link.append(title, arrow)
+  card.append(art, link)
+  return card
+}
+
+function renderGallery() {
+  thumbnails.disconnect()
+  results.replaceChildren()
+  const term = search.value.trim().toLowerCase()
+  const matches = patterns.filter((p) =>
+    [p.name, p.category, p.instructions].join(' ').toLowerCase().includes(term),
+  )
+  for (const category of categories) {
+    const group = matches.filter((p) => p.category === category)
+    if (!group.length) continue
+    const section = document.createElement('section')
+    const heading = document.createElement('h2')
+    heading.id = slug(category)
+    heading.textContent = category
+    section.setAttribute('aria-labelledby', heading.id)
+    section.className = 'collection'
+    const grid = document.createElement('div')
+    grid.className = 'grid'
+    grid.append(...group.map(makeCard))
+    section.append(heading, grid)
+    results.append(section)
+  }
+  el('no-results').hidden = matches.length !== 0
+}
+search.addEventListener('input', renderGallery)
 el('clear-search').onclick = () => {
   search.value = ''
-  buildList()
+  renderGallery()
   search.focus()
 }
 
+let selected: Pattern | undefined
+let source = ''
+let renderId = 0
+let previousFocus: HTMLElement | null = null
+let openedFromGallery = false
+let compact = false
 function renderFrame() {
-  const version = ++renderId
-  frame.title = selected.name + ' interactive preview'
-  frame.style.height = '290px'
-  // An opaque-origin sandbox runs only this reviewed fixture. The resize message
-  // is accepted only from the current frame and render, including after Reset.
-  const resize =
-    '<script>new ResizeObserver(()=>parent.postMessage({fslVersion:' +
-    version +
-    ',height:document.body.offsetHeight},"*")).observe(document.body)</script>'
-  frame.srcdoc =
-    '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src \'none\'; style-src \'unsafe-inline\'; script-src \'unsafe-inline\'; form-action \'none\'; base-uri \'none\'"><style>html, body{margin:0}body{padding:3px 2px 5px;box-sizing:border-box;background:transparent}</style></head><body>' +
-    source +
-    resize +
-    '</body></html>'
+  if (!selected) return
+  // A fresh frame keeps preview resets out of the browser's Back history.
+  const next = document.createElement('iframe')
+  next.id = 'preview'
+  next.title = selected.name + ' interactive preview'
+  next.setAttribute('sandbox', 'allow-scripts allow-forms')
+  next.classList.toggle('compact', compact)
+  next.style.height = '300px'
+  next.srcdoc = documentFor(source, false, ++renderId)
+  frame.replaceWith(next)
+  frame = next
 }
 window.addEventListener('message', (event) => {
-  const v = event.data
   if (
+    !dialog.open ||
     event.source !== frame.contentWindow ||
-    v?.fslVersion !== renderId ||
-    !Number.isFinite(v?.height)
+    event.data?.render !== renderId
   )
     return
-  frame.style.height = Math.min(Math.max(110, Math.ceil(v.height)), 1500) + 'px'
+  if (event.data.close) {
+    closeViewer()
+    return
+  }
+  if (Number.isFinite(event.data.height))
+    frame.style.height =
+      Math.min(1600, Math.max(95, Math.ceil(event.data.height))) + 'px'
 })
-function setView(view: 'preview' | 'code') {
-  activeView = view
-  const preview = activeView === 'preview'
+function setView(preview: boolean) {
   el('preview-button').setAttribute('aria-pressed', String(preview))
   el('code-button').setAttribute('aria-pressed', String(!preview))
   el('stage').hidden = !preview
@@ -117,7 +167,7 @@ function setView(view: 'preview' | 'code') {
 }
 function setWidth(mobile: boolean) {
   compact = mobile
-  el('stage').classList.toggle('narrow', compact)
+  frame.classList.toggle('compact', compact)
   el('mobile').setAttribute('aria-pressed', String(compact))
   el('desktop').setAttribute('aria-pressed', String(!compact))
 }
@@ -126,19 +176,78 @@ function show(pattern: Pattern) {
   document.title = pattern.name + ' · Front/SaaS'
   el('category').textContent = pattern.category
   el('pattern-title').textContent = pattern.name
-  el('description').textContent = pattern.description
   el('instructions').textContent = pattern.instructions
   el('integration').textContent = pattern.integration
+  el('stage').className = 'mat-' + pattern.mat
+  dialog.querySelector('details')!.open = false
   source = sourceFor(pattern.id)
   el('source').textContent = source
-  setView('preview')
+  if (!dialog.open) {
+    previousFocus =
+      document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null
+    dialog.showModal()
+    document.documentElement.classList.add('modal-open')
+  }
+  setView(true)
+  setWidth(false)
   renderFrame()
-  buildList()
+  dialog.scrollTop = 0
+  el('close').focus({ preventScroll: true })
 }
-el('preview-button').onclick = () => setView('preview')
-el('code-button').onclick = () => setView('code')
-el('desktop').onclick = () => setWidth(false)
+function hide() {
+  if (!dialog.open) return
+  dialog.close()
+  selected = undefined
+  openedFromGallery = false
+  document.documentElement.classList.remove('modal-open')
+  document.title = 'Front/SaaS — Pattern library'
+  if (previousFocus?.isConnected) previousFocus.focus({ preventScroll: true })
+}
+function closeViewer() {
+  if (openedFromGallery) {
+    history.back()
+  } else {
+    history.replaceState(null, '', location.pathname + location.search)
+    hide()
+  }
+}
+function readLocation() {
+  const id = location.hash.slice(1)
+  const pattern = patterns.find((p) => p.id === id)
+  if (pattern) {
+    if (selected !== pattern) show(pattern)
+  } else hide()
+}
+results.addEventListener('click', (event) => {
+  const link = (event.target as Element).closest<HTMLAnchorElement>(
+    'a.card-link',
+  )
+  if (!link || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey)
+    return
+  openedFromGallery = true
+})
+dialog.addEventListener('cancel', (event) => {
+  event.preventDefault()
+  closeViewer()
+})
+dialog.addEventListener('click', (event) => {
+  if (event.target !== dialog) return
+  const rect = dialog.getBoundingClientRect()
+  if (
+    event.clientX < rect.left ||
+    event.clientX > rect.right ||
+    event.clientY < rect.top ||
+    event.clientY > rect.bottom
+  )
+    closeViewer()
+})
+el('close').onclick = closeViewer
+el('preview-button').onclick = () => setView(true)
+el('code-button').onclick = () => setView(false)
 el('mobile').onclick = () => setWidth(true)
+el('desktop').onclick = () => setWidth(false)
 el('reset').onclick = () => {
   renderFrame()
   el('notice').textContent = 'Preview reset.'
@@ -148,21 +257,15 @@ el('copy').onclick = async () => {
     await navigator.clipboard.writeText(source)
     el('notice').textContent = 'HTML, CSS and JavaScript copied.'
   } catch {
-    setView('code')
-    const selection = window.getSelection(),
-      range = document.createRange()
+    setView(false)
+    const range = document.createRange()
     range.selectNodeContents(el('source'))
+    const selection = window.getSelection()
     selection?.removeAllRanges()
     selection?.addRange(range)
-    el('notice').textContent =
-      'Source selected. Use your copy shortcut to copy it.'
+    el('notice').textContent = 'Source selected. Use your copy shortcut.'
   }
 }
-window.addEventListener('hashchange', () => {
-  const p = patterns.find((item) => item.id === location.hash.slice(1))
-  if (p) {
-    show(p)
-    el('pattern-title').focus({ preventScroll: true })
-  }
-})
-show(selected)
+window.addEventListener('hashchange', readLocation)
+renderGallery()
+readLocation()

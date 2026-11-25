@@ -1,0 +1,23 @@
+[data-fsl='billing-cycle'] {
+  --fs-ink: #1b3456;
+  --fs-muted: #526278;
+  --fs-accent: #24457d;
+  border-radius: 1px;
+  background: #f9fcff;
+  border: 1px solid #8397b3;
+  border-top: 6px solid #29456e;
+}
+[data-fsl='billing-cycle'] .fs-head {
+  margin-bottom: 8px;
+}
+[data-fsl='billing-cycle'] .fs-figure {
+  letter-spacing: -0.06em;
+  font-weight: 550;
+}
+[data-fsl='billing-cycle'] .fs-actions {
+  margin-top: 0;
+}
+[data-fsl='billing-cycle'] .fs-pill {
+  color: #214779;
+  background: #e1ebf6;
+}

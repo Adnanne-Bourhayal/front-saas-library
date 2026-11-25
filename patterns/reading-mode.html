@@ -1,0 +1,34 @@
+<section data-fsl="reading-mode" aria-label="Reading preferences">
+  <div class="fs-head">
+    <h2>Reader</h2>
+    <button type="button" aria-pressed="false" data-theme>Night mode</button>
+  </div>
+  <label class="fs-type"
+    >Text size
+    <input type="range" min="16" max="30" value="21" step="1" /><output
+      >21 px</output
+    ></label
+  >
+  <div class="fs-page">
+    <small>Reading sample</small>
+    <p>Good tools leave room for the work itself.</p>
+  </div>
+</section>
+<script>
+  ;(() => {
+    const root = document.currentScript.previousElementSibling
+    const button = root.querySelector('[data-theme]')
+    const range = root.querySelector('input')
+    button.addEventListener('click', () => {
+      const night = button.getAttribute('aria-pressed') !== 'true'
+      button.setAttribute('aria-pressed', String(night))
+      root.classList.toggle('fs-night', night)
+    })
+    function renderSize() {
+      root.style.setProperty('--reader-size', range.value + 'px')
+      root.querySelector('output').textContent = range.value + ' px'
+    }
+    range.addEventListener('input', renderSize)
+    renderSize()
+  })()
+</script>

@@ -1,105 +1,167 @@
 import commonStyles from '../patterns/base.css?raw'
 import license from '../LICENSE?raw'
 
+export const categories = [
+  'Data display',
+  'Billing',
+  'Onboarding',
+  'Settings',
+] as const
+type Category = (typeof categories)[number]
+
 export type Pattern = {
   id: string
   name: string
-  category: string
-  description: string
+  category: Category
+  mat: string
   instructions: string
   integration: string
-  icon: string
 }
 
 export const patterns: Pattern[] = [
   {
+    id: 'activity-pulse',
+    name: 'Activity pulse',
+    category: 'Data display',
+    mat: 'amethyst',
+    instructions:
+      'Switch between weekly and monthly activity to compare the bars.',
+    integration:
+      'Replace the two sample series with your totals and update the period labels.',
+  },
+  {
     id: 'member-directory',
     name: 'Member directory',
     category: 'Data display',
-    icon: 'members',
-    description:
-      'A searchable team list with role labels and an invitation-status filter.',
+    mat: 'fern',
     instructions:
-      'Search for a role, then filter the results by invitation status.',
+      'Search for a name or role, then narrow the list by invitation status.',
     integration:
-      'Replace the sample rows with your team data. The visible count is calculated from the rows.',
+      'Replace the sample rows with your team. The count follows the visible members.',
+  },
+  {
+    id: 'release-stream',
+    name: 'Release timeline',
+    category: 'Data display',
+    mat: 'clay',
+    instructions: 'Open a release to read what changed.',
+    integration:
+      'Use a details element per release and a time element for its date.',
   },
   {
     id: 'billing-cycle',
     name: 'Plan calculator',
     category: 'Billing',
-    icon: 'billing',
-    description:
-      'Show a seat-based price and the amount due at each billing interval.',
+    mat: 'denim',
     instructions:
-      'Switch billing periods or change the number of seats to compare totals.',
+      'Change the seat count and billing interval to compare totals.',
     integration:
-      'Set your per-seat rates and currency in the calculation. Connect purchases to a server-side checkout.',
+      'Set the rates and currency in the calculator; use a server-side checkout for actual purchases.',
+  },
+  {
+    id: 'invoice-slip',
+    name: 'Invoice slip',
+    category: 'Billing',
+    mat: 'mustard',
+    instructions:
+      'Switch invoices to see their line items, total and payment status.',
+    integration:
+      'Replace the sample invoices with records from your billing service.',
+  },
+  {
+    id: 'usage-meter',
+    name: 'Storage allowance',
+    category: 'Billing',
+    mat: 'graphite',
+    instructions:
+      'Move the usage slider to explore remaining capacity and the limit.',
+    integration:
+      'Read the limit from your plan and supply measured usage instead of a demo slider.',
   },
   {
     id: 'first-project',
     name: 'First project',
     category: 'Onboarding',
-    icon: 'project',
-    description:
-      'An empty workspace that turns into a project list after the first creation.',
-    instructions:
-      'Enter a project name and submit to see the empty state become a list.',
+    mat: 'blush',
+    instructions: 'Name your first project and add it to the workspace.',
     integration:
-      'Save created projects through your own API before confirming them in production.',
+      'Save the new project in your application before confirming success.',
   },
   {
     id: 'setup-checklist',
     name: 'Setup checklist',
     category: 'Onboarding',
-    icon: 'check',
-    description:
-      'A three-step onboarding checklist with a live completion indicator.',
-    instructions: 'Check and uncheck the steps to update the progress bar.',
+    mat: 'sage',
+    instructions:
+      'Complete or undo the three steps and watch the progress update.',
     integration:
-      'Replace the setup steps with your workflow and store completion in the user profile.',
+      'Use steps that match your workflow and persist completion in the user profile.',
   },
   {
-    id: 'usage-meter',
-    name: 'Usage meter',
-    category: 'Billing',
-    icon: 'meter',
-    description:
-      'A storage meter with explicit remaining capacity and a near-limit state.',
-    instructions:
-      'Move the slider towards the limit to preview each capacity state.',
+    id: 'workspace-tour',
+    name: 'Workspace tour',
+    category: 'Onboarding',
+    mat: 'orchid',
+    instructions: 'Move through three illustrated steps using Next and Back.',
     integration:
-      'Set the capacity from your plan and replace the preview slider with measured usage.',
+      'Use one slide for each step and connect the finish action to your onboarding flow.',
   },
   {
     id: 'notification-preferences',
     name: 'Notification settings',
     category: 'Settings',
-    icon: 'settings',
-    description:
-      'A settings form that distinguishes pending edits from saved preferences.',
-    instructions: 'Change a preference, then save it or discard the edits.',
+    mat: 'silt',
+    instructions: 'Change a preference, then save it or discard your edits.',
     integration:
-      'Wire the save action to your endpoint and report success only after persistence succeeds.',
+      'Connect the save action to your endpoint and confirm success after persistence.',
+  },
+  {
+    id: 'reading-mode',
+    name: 'Reading preferences',
+    category: 'Settings',
+    mat: 'cobalt',
+    instructions:
+      'Adjust text size and theme, then inspect the reading sample.',
+    integration:
+      'Apply the same preferences to your content and store them with the user profile.',
+  },
+  {
+    id: 'week-planner',
+    name: 'Working days',
+    category: 'Settings',
+    mat: 'melon',
+    instructions:
+      'Choose the days your team works and see the weekly schedule update.',
+    integration:
+      'Start with your saved working days and persist changes with the appropriate time zone.',
   },
 ]
 
-const sources = import.meta.glob<string>('../patterns/*.html', {
+const html = import.meta.glob<string>('../patterns/*.html', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+})
+const themes = import.meta.glob<string>('../patterns/themes/*.css', {
   query: '?raw',
   import: 'default',
   eager: true,
 })
 
-/** The iframe, code viewer and clipboard always use the same self-contained source. */
+/** Gallery thumbnails, live previews and copies use the same HTML, CSS and behavior. */
 export function sourceFor(id: string) {
-  const template = sources['../patterns/' + id + '.html']
-  if (!template) throw Error('Unknown pattern')
-  return (
-    template.trim() +
-    '\n<style>\n' +
-    commonStyles.trim() +
-    '\n</style>\n<!--\n' +
-    license.trim() +
-    '\n-->\n'
-  )
+  const example = html['../patterns/' + id + '.html']
+  if (!example) throw new Error('Unknown pattern')
+  const theme = themes['../patterns/themes/' + id + '.css']
+  return [
+    example.trim(),
+    '<style>',
+    commonStyles.trim(),
+    theme.trim(),
+    '</style>',
+    '<!--',
+    license.trim(),
+    '-->',
+    '',
+  ].join('\n')
 }

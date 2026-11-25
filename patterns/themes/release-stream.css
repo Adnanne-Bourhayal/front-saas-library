@@ -1,0 +1,34 @@
+[data-fsl='release-stream'] {
+  --fs-ink: #402c20;
+  --fs-muted: #655748;
+  background: #fff6e7;
+  border: 1px solid #b49171;
+  border-radius: 0;
+  box-shadow: 4px 4px 0 #684d361f;
+}
+[data-fsl='release-stream'] h2 {
+  font:
+    400 34px/1 Georgia,
+    serif;
+  letter-spacing: -0.055em;
+}
+[data-fsl='release-stream'] details {
+  border-top: 1px solid #c5b5a0;
+}
+[data-fsl='release-stream'] summary {
+  padding: 10px 0;
+  cursor: pointer;
+  font-weight: 600;
+}
+[data-fsl='release-stream'] time {
+  font:
+    11px ui-monospace,
+    monospace;
+  margin: 0 8px 0 3px;
+  color: #7b4936;
+}
+[data-fsl='release-stream'] details p {
+  font-size: 13px;
+  padding: 0 0 12px 20px;
+  color: #655748;
+}

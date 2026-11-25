@@ -1,0 +1,29 @@
+[data-fsl='first-project'] {
+  --fs-ink: #432b2c;
+  --fs-muted: #6e5657;
+  --fs-line: #d6bebe;
+  --fs-accent: #74404a;
+  border: 1px solid #bc9297;
+  border-radius: 14px;
+  background: #fff8f5;
+}
+[data-fsl='first-project'] .fs-pill {
+  background: #f1ddda;
+  color: #74404a;
+}
+[data-fsl='first-project'] [data-empty]::before {
+  content: '';
+  display: block;
+  width: 47px;
+  height: 28px;
+  margin: 12px 0;
+  background: #efcbc3;
+  border: 1px solid #a66d71;
+  border-radius: 3px 6px 4px 4px;
+  box-shadow:
+    -4px -4px 0 -1px #f9e2d7,
+    -5px -5px 0 -1px #a66d71;
+}
+[data-fsl='first-project'] .fs-primary {
+  background: #74404a;
+}

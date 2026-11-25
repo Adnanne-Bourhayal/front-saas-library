@@ -1,0 +1,66 @@
+<section data-fsl="invoice-slip" aria-label="Invoice slip">
+  <div class="fs-head">
+    <h2>Invoice</h2>
+    <label
+      >Period
+      <select aria-label="Invoice month">
+        <option value="oct">October</option>
+        <option value="sep">September</option>
+      </select></label
+    >
+  </div>
+  <div class="fs-ticket">
+    <span data-number></span><span data-status></span>
+  </div>
+  <ul class="fs-rows"></ul>
+  <div class="fs-total">
+    <span>Total</span><strong data-total aria-live="polite"></strong>
+  </div>
+</section>
+<script>
+  ;(() => {
+    const root = document.currentScript.previousElementSibling
+    const invoices = {
+      oct: {
+        number: 'IN–024',
+        status: 'Paid',
+        items: [
+          ['Studio plan', 2400],
+          ['Extra storage', 600],
+        ],
+      },
+      sep: {
+        number: 'IN–023',
+        status: 'Credited',
+        items: [
+          ['Studio plan', 2400],
+          ['Service credit', -400],
+        ],
+      },
+    }
+    const month = root.querySelector('select')
+    const money = new Intl.NumberFormat('en-IE', {
+      style: 'currency',
+      currency: 'EUR',
+    })
+    function showInvoice() {
+      const invoice = invoices[month.value]
+      root.querySelector('[data-number]').textContent = invoice.number
+      root.querySelector('[data-status]').textContent = invoice.status
+      const lines = root.querySelector('ul')
+      lines.replaceChildren()
+      for (const [description, cents] of invoice.items) {
+        const row = document.createElement('li')
+        const amount = document.createElement('span')
+        amount.textContent = money.format(cents / 100)
+        row.append(description, amount)
+        lines.append(row)
+      }
+      root.querySelector('[data-total]').textContent = money.format(
+        invoice.items.reduce((sum, item) => sum + item[1], 0) / 100,
+      )
+    }
+    month.addEventListener('change', showInvoice)
+    showInvoice()
+  })()
+</script>

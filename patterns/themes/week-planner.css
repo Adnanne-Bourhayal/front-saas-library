@@ -1,0 +1,35 @@
+[data-fsl='week-planner'] {
+  --fs-ink: #49322b;
+  --fs-line: #cfa790;
+  --fs-accent: #7a342b;
+  background: #fff0df;
+  border: 1px solid #b5866c;
+  border-radius: 0;
+}
+[data-fsl='week-planner'] h2 {
+  font:
+    400 32px/1.15 Georgia,
+    serif;
+}
+[data-fsl='week-planner'] .fs-days {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px;
+}
+[data-fsl='week-planner'] .fs-days button {
+  padding: 8px 0;
+  border-radius: 50% 50% 3px 3px;
+  font-size: 14px;
+  background: #ffe7d3;
+  border-color: #bc927b;
+}
+[data-fsl='week-planner'] .fs-days button[aria-pressed='true'] {
+  background: #77382e;
+  color: #fff4de;
+}
+[data-fsl='week-planner'] .fs-schedule {
+  margin-top: 16px;
+  font:
+    13px/1.5 ui-monospace,
+    monospace;
+}

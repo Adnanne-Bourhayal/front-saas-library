@@ -1,0 +1,26 @@
+[data-fsl='setup-checklist'] {
+  --fs-ink: #263b27;
+  --fs-muted: #52684c;
+  --fs-line: #bac8ad;
+  --fs-accent: #42673b;
+  background: #f4f6e9;
+  border: 0;
+  border-left: 6px solid #4a683f;
+  border-radius: 0;
+}
+[data-fsl='setup-checklist'] h2 {
+  font:
+    400 29px/1.1 Georgia,
+    serif;
+  letter-spacing: -0.045em;
+}
+[data-fsl='setup-checklist'] .fs-pill {
+  background: #e0e9cf;
+  color: #354f2f;
+}
+[data-fsl='setup-checklist'] .fs-rows li {
+  padding: 5px 0;
+}
+[data-fsl='setup-checklist'] progress {
+  height: 6px;
+}

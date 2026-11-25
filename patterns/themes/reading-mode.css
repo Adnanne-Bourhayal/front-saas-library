@@ -1,0 +1,48 @@
+[data-fsl='reading-mode'] {
+  --fs-ink: #273747;
+  --fs-muted: #495c73;
+  --fs-accent: #344c76;
+  --fs-line: #a6b5c7;
+  background: #f2f5fb;
+  border: 1px solid #95a6bb;
+  border-radius: 8px;
+}
+[data-fsl='reading-mode'] h2 {
+  font-size: 19px;
+  font-weight: 500;
+}
+[data-fsl='reading-mode'] .fs-head button {
+  font-size: 12px;
+  background: transparent;
+}
+[data-fsl='reading-mode'] .fs-type {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+}
+[data-fsl='reading-mode'] input {
+  min-width: 0;
+  flex: 1;
+  accent-color: var(--fs-accent);
+}
+[data-fsl='reading-mode'] .fs-page {
+  margin-top: 14px;
+  border-top: 1px solid var(--fs-line);
+  padding: 14px 0 0;
+}
+[data-fsl='reading-mode'] .fs-page p {
+  font:
+    italic var(--reader-size, 21px) / 1.3 Georgia,
+    serif;
+}
+[data-fsl='reading-mode'].fs-night {
+  --fs-ink: #f4efdf;
+  --fs-muted: #d2c6a8;
+  --fs-line: #817661;
+  --fs-accent: #d7c99f;
+  background: #342f28;
+}
+[data-fsl='reading-mode'].fs-night [aria-pressed='true'] {
+  color: var(--fs-ink);
+}

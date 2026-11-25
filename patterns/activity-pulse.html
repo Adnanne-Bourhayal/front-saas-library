@@ -1,0 +1,65 @@
+<section data-fsl="activity-pulse" aria-label="Activity pulse">
+  <div class="fs-head">
+    <h2>Active sessions</h2>
+    <div class="fs-period" role="group" aria-label="Period">
+      <button type="button" data-period="week" aria-pressed="true">Week</button
+      ><button type="button" data-period="month" aria-pressed="false">
+        Month
+      </button>
+    </div>
+  </div>
+  <p class="fs-figure" role="status"></p>
+  <ol class="fs-bars" aria-label="Sessions by period"></ol>
+</section>
+<script>
+  ;(() => {
+    const root = document.currentScript.previousElementSibling
+    const series = {
+      week: [
+        ['Mon', 19],
+        ['Tue', 26],
+        ['Wed', 23],
+        ['Thu', 39],
+        ['Fri', 48],
+        ['Sat', 32],
+        ['Sun', 46],
+      ],
+      month: [
+        ['Week 1', 165],
+        ['Week 2', 210],
+        ['Week 3', 192],
+        ['Week 4', 233],
+      ],
+    }
+    const periodButtons = root.querySelectorAll('[data-period]')
+    function render(period) {
+      const points = series[period]
+      const peak = Math.max(...points.map((point) => point[1]))
+      root.querySelector('[role=status]').textContent = points
+        .reduce((sum, point) => sum + point[1], 0)
+        .toLocaleString('en')
+      const chart = root.querySelector('ol')
+      chart.replaceChildren()
+      for (const [label, count] of points) {
+        const item = document.createElement('li')
+        item.setAttribute('aria-label', label + ': ' + count + ' sessions')
+        const bar = document.createElement('span')
+        bar.style.height = Math.round((count / peak) * 78) + 'px'
+        const axis = document.createElement('small')
+        axis.textContent = label
+        item.append(bar, axis)
+        chart.append(item)
+      }
+      periodButtons.forEach((button) =>
+        button.setAttribute(
+          'aria-pressed',
+          String(button.dataset.period === period),
+        ),
+      )
+    }
+    periodButtons.forEach((button) =>
+      button.addEventListener('click', () => render(button.dataset.period)),
+    )
+    render('week')
+  })()
+</script>

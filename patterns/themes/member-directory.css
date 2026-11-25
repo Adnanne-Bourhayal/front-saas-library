@@ -1,0 +1,40 @@
+[data-fsl='member-directory'] {
+  --fs-ink: #213b31;
+  --fs-muted: #52685f;
+  --fs-accent: #24523d;
+  --fs-light: #e5eee8;
+  background: #fcfffc;
+  border-radius: 3px;
+  border: 1px solid #799782;
+}
+[data-fsl='member-directory'] .fs-head {
+  margin-bottom: 8px;
+}
+[data-fsl='member-directory'] .fs-fields {
+  margin: 8px 0;
+}
+[data-fsl='member-directory'] .fs-rows li {
+  justify-content: start;
+  padding: 7px 0;
+}
+[data-fsl='member-directory'] .fs-rows li::before {
+  content: attr(data-initials);
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  background: #dbe8db;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 700;
+  flex: none;
+}
+[data-fsl='member-directory'] .fs-rows li:nth-child(2)::before {
+  background: #eee3d5;
+}
+[data-fsl='member-directory'] .fs-rows li:nth-child(3)::before {
+  background: #dde5ee;
+}
+[data-fsl='member-directory'] .fs-rows li > span {
+  margin-left: auto;
+}

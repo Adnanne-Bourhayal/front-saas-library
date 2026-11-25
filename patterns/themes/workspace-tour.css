@@ -1,0 +1,59 @@
+[data-fsl='workspace-tour'] {
+  --fs-ink: #362a49;
+  --fs-muted: #5c4c6c;
+  --fs-accent: #513b71;
+  border: 0;
+  border-radius: 6px;
+  background: #f5ebfe;
+  position: relative;
+  overflow: hidden;
+}
+[data-fsl='workspace-tour'] .fs-scene {
+  height: 65px;
+  display: flex;
+  align-items: center;
+  margin: 0 0 10px;
+}
+[data-fsl='workspace-tour'] .fs-scene i {
+  height: 52px;
+  width: 52px;
+  border: 1px solid #533a7c;
+  display: block;
+  background: #b3a0df;
+  border-radius: 50%;
+}
+[data-fsl='workspace-tour'] .fs-scene i + i {
+  margin-left: -14px;
+  background: #e5b4d1;
+  border-radius: 10px;
+  transform: rotate(18deg);
+}
+[data-fsl='workspace-tour'] .fs-scene i:last-child {
+  background: #f6cf77;
+  border-radius: 0 50% 50% 0;
+  transform: rotate(0);
+}
+[data-fsl='workspace-tour'][data-step='1'] .fs-scene i {
+  transform: rotate(45deg);
+  border-radius: 0;
+}
+[data-fsl='workspace-tour'][data-step='2'] .fs-scene i {
+  border-radius: 0 50%;
+  transform: rotate(-22deg);
+}
+[data-fsl='workspace-tour'][data-step='3'] .fs-scene i {
+  border-radius: 50%;
+  background: #afccab;
+}
+[data-fsl='workspace-tour'] small {
+  font-size: 11px;
+}
+[data-fsl='workspace-tour'] h2 {
+  margin: 4px 0;
+}
+[data-fsl='workspace-tour'] [data-body] {
+  font-size: 14px;
+}
+[data-fsl='workspace-tour'] .fs-actions {
+  justify-content: space-between;
+}

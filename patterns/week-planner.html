@@ -1,0 +1,44 @@
+<section data-fsl="week-planner" aria-label="Working days">
+  <div class="fs-head"><h2>Working week</h2></div>
+  <div class="fs-days" role="group" aria-label="Select working days">
+    <button aria-label="Monday" aria-pressed="true">M</button
+    ><button aria-label="Tuesday" aria-pressed="true">T</button>
+    <button aria-label="Wednesday" aria-pressed="true">W</button
+    ><button aria-label="Thursday" aria-pressed="true">T</button>
+    <button aria-label="Friday" aria-pressed="false">F</button
+    ><button aria-label="Saturday" aria-pressed="false">S</button>
+    <button aria-label="Sunday" aria-pressed="false">S</button>
+  </div>
+  <p class="fs-schedule" role="status"></p>
+</section>
+<script>
+  ;(() => {
+    const root = document.currentScript.previousElementSibling
+    const days = [...root.querySelectorAll('button')]
+    function update() {
+      const active = days.filter(
+        (day) => day.getAttribute('aria-pressed') === 'true',
+      )
+      const names = active.map((day) =>
+        day.getAttribute('aria-label').slice(0, 3),
+      )
+      root.querySelector('[role=status]').textContent = active.length
+        ? active.length +
+          (active.length === 1 ? ' day' : ' days') +
+          ' · ' +
+          names.join(', ')
+        : 'No working days selected.'
+    }
+    for (const day of days) {
+      day.type = 'button'
+      day.addEventListener('click', () => {
+        day.setAttribute(
+          'aria-pressed',
+          String(day.getAttribute('aria-pressed') !== 'true'),
+        )
+        update()
+      })
+    }
+    update()
+  })()
+</script>

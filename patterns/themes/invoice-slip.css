@@ -1,0 +1,48 @@
+[data-fsl='invoice-slip'] {
+  --fs-ink: #25241b;
+  --fs-muted: #5b5846;
+  background: #fffce9;
+  border: 0;
+  border-radius: 0;
+  font-family: ui-monospace, monospace;
+  box-shadow: 4px 5px 0 #60552325;
+}
+[data-fsl='invoice-slip'] h2 {
+  font:
+    700 30px/1.15 Georgia,
+    serif;
+}
+[data-fsl='invoice-slip'] .fs-head {
+  margin-bottom: 8px;
+}
+[data-fsl='invoice-slip'] label {
+  font-size: 12px;
+}
+[data-fsl='invoice-slip'] select {
+  width: auto;
+  padding: 4px;
+  border-radius: 0;
+}
+[data-fsl='invoice-slip'] .fs-ticket,
+[data-fsl='invoice-slip'] .fs-total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border-top: 1px dashed #756f51;
+  padding: 10px 0;
+}
+[data-fsl='invoice-slip'] .fs-ticket {
+  font-size: 12px;
+}
+[data-fsl='invoice-slip'] .fs-rows li {
+  font-size: 13px;
+  border: 0;
+  padding: 4px 0;
+}
+[data-fsl='invoice-slip'] .fs-total {
+  margin-top: 10px;
+}
+[data-fsl='invoice-slip'] .fs-total strong {
+  font-size: 23px;
+}

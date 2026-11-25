@@ -1,0 +1,56 @@
+<section data-fsl="workspace-tour" aria-label="Workspace tour">
+  <div class="fs-scene" aria-hidden="true"><i></i><i></i><i></i></div>
+  <div aria-live="polite">
+    <small data-position></small>
+    <h2 data-title></h2>
+    <p data-body></p>
+  </div>
+  <div class="fs-actions">
+    <button type="button" data-back>Back</button
+    ><button type="button" class="fs-primary" data-next>Next</button>
+  </div>
+</section>
+<script>
+  ;(() => {
+    const root = document.currentScript.previousElementSibling
+    const slides = [
+      ['Pick a space', 'Keep each team’s projects in its own workspace.'],
+      [
+        'Invite your team',
+        'Bring collaborators into the space and assign roles.',
+      ],
+      ['Make it yours', 'Choose a view that fits the way your team works.'],
+    ]
+    let step = 0
+    const previous = root.querySelector('[data-back]')
+    const next = root.querySelector('[data-next]')
+    function render() {
+      const done = step === slides.length
+      root.querySelector('[data-position]').textContent = done
+        ? 'Complete'
+        : 'Step ' + (step + 1) + ' of ' + slides.length
+      root.querySelector('[data-title]').textContent = done
+        ? 'Ready to go'
+        : slides[step][0]
+      root.querySelector('[data-body]').textContent = done
+        ? 'Your workspace tour is complete.'
+        : slides[step][1]
+      root.dataset.step = String(step)
+      previous.disabled = step === 0
+      next.textContent = done
+        ? 'Start again'
+        : step === slides.length - 1
+          ? 'Finish'
+          : 'Next'
+    }
+    previous.addEventListener('click', () => {
+      step = Math.max(0, step - 1)
+      render()
+    })
+    next.addEventListener('click', () => {
+      step = step === slides.length ? 0 : step + 1
+      render()
+    })
+    render()
+  })()
+</script>
